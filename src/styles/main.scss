@@ -91,6 +91,7 @@ $pulseDuration: 0.5s;
             margin: 5.5% 6.6%;
             float: left;
         }
+
         & .button {
             width: 20%;
             height: 0;
@@ -118,6 +119,11 @@ $pulseDuration: 0.5s;
                     animation: pulse-gray linear $pulseDuration 1;
                 }
             }
+
+            &.inactive {
+                display: none;
+            }
+
             &.call,&.call-reply {
                 background-color: $green;
                 background-image: url('./audio-call.png');
@@ -134,6 +140,13 @@ $pulseDuration: 0.5s;
             }
             &.back {
                 background-color: $red;
+                background-image: url('./back.png');
+                &.clicked {
+                    animation: pulse-red linear $pulseDuration 1;
+                }
+            }
+            &.transfer {
+                background-color: $blue;
                 background-image: url('./back.png');
                 &.clicked {
                     animation: pulse-red linear $pulseDuration 1;

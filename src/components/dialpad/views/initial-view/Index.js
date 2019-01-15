@@ -12,6 +12,22 @@ class InitialView extends Component {
     this.onDigitPressed = this.onDigitPressed.bind(this);
     this.onBackPressed = this.onBackPressed.bind(this);
     this.onCallPressed = this.onCallPressed.bind(this);
+    this.onPaste = this.onPaste.bind(this);
+
+    document.addEventListener('paste', this.onPaste);
+  }
+
+  onPaste(event) {
+    let paste = (event.clipboardData || window.clipboardData).getData('text') || '';
+
+    this.setState({
+      display: paste.replace(/[^\d]+/g, '')
+    });
+
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('paste', this.onPaste);
   }
 
   onDigitPressed(value) {

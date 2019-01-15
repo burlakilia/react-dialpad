@@ -9,18 +9,22 @@ import STATES from '../../util/states';
 import ACTIONS from '../../util/actions';
 
 class ReactDialpad extends Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       state: STATES.DEFAULT,
       timer: null,
       startTime: null,
-      contact: {}
+      contact: props.contact || {},
+      noStateErrors: props.noStateErrors || false
     };
+
     this.onCallPressed = this.onCallPressed.bind(this);
     this.onCallEndPressed = this.onCallEndPressed.bind(this);
     this.onCallReplyPressed = this.onCallReplyPressed.bind(this);
     this.onCallRejectPressed = this.onCallRejectPressed.bind(this);
+    this.onNotesChanged = this.onNotesChanged.bind(this);
+    this.onTransferPressed = this.onTransferPressed.bind(this);
 
     this.setRinging = this.setRinging.bind(this);
     this.setOnCall = this.setOnCall.bind(this);
@@ -55,6 +59,10 @@ class ReactDialpad extends Component {
     }
   }
 
+  onNotesChanged(value) {
+    this.setState({ notes: value })
+  }
+
   onCallEndPressed() {
     const { onActionInvoked } = this.props;
 
@@ -68,9 +76,6 @@ class ReactDialpad extends Component {
   }
 
   onCallReplyPressed() {
-    if (this.state.state !== STATES.INCOMING_CALL) {
-      throw new Error('Call can be replied only on INCOMING_CALL state');
-    }
     const { onActionInvoked } = this.props;
 
     this.setState({
@@ -82,10 +87,20 @@ class ReactDialpad extends Component {
     }
   }
 
-  onCallRejectPressed() {
-    if (this.state.state !== STATES.INCOMING_CALL) {
-      throw new Error('Call can be rejected only on INCOMING_CALL state');
+  onTransferPressed() {
+    const { onTransferPressed } = this.props;
+
+    if (onTransferPressed) {
+      onTransferPressed();
     }
+
+  }
+
+  isState(state) {
+    return this.state.noStateErrors && state === this.state.state;
+  }
+
+  onCallRejectPressed() {
     const { onActionInvoked } = this.props;
 
     this.setState({
@@ -98,37 +113,25 @@ class ReactDialpad extends Component {
   }
 
   setOnCall() {
-    if (this.state.state === STATES.RINGING ||
-			this.state.state === STATES.REPLYING ||
-			this.state.state === STATES.CALLING) {
-      this.setState({
-        state: STATES.ON_CALL,
-        startTime: Date.now()
-      });
+    this.setState({
+      state: STATES.ON_CALL,
+      startTime: Date.now()
+    });
 
-      this.timer = setInterval(() => {
-        this.setState({
-          timer: Math.floor((Date.now() - this.state.startTime) / 1000)
-        });
-      }, 1000);
-    } else {
-      throw new Error('ON_CALL state can only be navigated from RINGING, REPLYING or CALLING');
-    }
+    this.timer = setInterval(() => {
+      this.setState({
+        timer: Math.floor((Date.now() - this.state.startTime) / 1000)
+      });
+    }, 1000);
   }
 
   setRinging() {
-    if (this.state.state !== STATES.CALLING) {
-      throw new Error('RINGING state can only be navigated CALLING');
-    }
     this.setState({
       state: STATES.RINGING
     });
   }
 
   setIncomingCall(contact) {
-    if (this.state.state !== STATES.DEFAULT) {
-      throw new Error('Multiple call not supported.');
-    }
     this.setState({
       contact,
       state: STATES.INCOMING_CALL
@@ -136,6 +139,8 @@ class ReactDialpad extends Component {
   }
 
   endCall() {
+    const { notes } = this.state;
+
     if (this.timer) {
       clearInterval(this.timer);
     }
@@ -143,8 +148,15 @@ class ReactDialpad extends Component {
       state: STATES.DEFAULT,
       startTime: null,
       timer: null,
-      contact: {}
+      contact: {},
+      notes: ''
     });
+
+    return notes;
+  }
+
+  setContact(contact) {
+    this.setState({ contact });
   }
 
   render() {
@@ -170,6 +182,8 @@ class ReactDialpad extends Component {
         state={this.state.state}
         timer={this.state.timer}
         onCallEndPressed={this.onCallEndPressed}
+        onNotesChanged={this.onNotesChanged}
+        onTransferPressed={this.onTransferPressed}
       />;
     }
 

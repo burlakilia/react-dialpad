@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 
 import CallEnd from './call-end/Index';
+import Transfer from './transfer/Index';
+
+// import Speaker from './speaker';
 // import Camera from './camera';
 // import Microphone from './microphone';
-// import Speaker from './speaker';
 // import Keypad from './keypad';
 
 import STATES from '../../../../../util/states';
@@ -12,6 +14,7 @@ class Action extends Component {
   constructor() {
     super();
     this.onCallEndPressed = this.onCallEndPressed.bind(this);
+    this.onTransferPressed = this.onTransferPressed.bind(this);
   }
 
   onCallEndPressed() {
@@ -19,6 +22,14 @@ class Action extends Component {
 
     if (onCallEndPressed) {
       onCallEndPressed();
+    }
+  }
+
+  onTransferPressed() {
+    const { onTransferPressed } = this.props;
+
+    if (onTransferPressed) {
+      onTransferPressed();
     }
   }
 
@@ -32,6 +43,11 @@ class Action extends Component {
         onPressed={this.onCallEndPressed}
         callState={state}
         enablerStates={[STATES.CALLING, STATES.RINGING, STATES.ON_CALL]}
+      />
+      <Transfer
+        onPressed={this.onTransferPressed}
+        callState={state}
+        enablerStates={[STATES.ON_CALL]}
       />
       {/* <Camera />
 			<Microphone />

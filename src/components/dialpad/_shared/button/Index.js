@@ -39,11 +39,10 @@ class Button extends React.Component {
     }
   }
   render() {
-    const { value, subvalue, className } = this.props;
-
+    const { value, subvalue, className, callState, enablerStates = [] } = this.props;
     return (
       <div
-        className={`button ${className} ${!subvalue ? 'no-sub' : ''} ${this.state.internalClassName}`}
+        className={`button ${className} ${!subvalue ? 'no-sub' : ''} ${enablerStates.length > 0 && !enablerStates.includes(callState) ? 'inactive' : ''} ${this.state.internalClassName}`}
         onClick={() => this.onPressed(value)}>
         {value}
         {

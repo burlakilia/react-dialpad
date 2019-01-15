@@ -4,6 +4,7 @@ import Contact from './contact/Index';
 import Status from './status/Index';
 import Timer from './timer/Index';
 import Action from './action/Index';
+import { EditableText } from '@blueprintjs/core';
 
 import STATES from '../../../../util/states';
 
@@ -13,6 +14,8 @@ class CallView extends Component {
     this.onCallEndPressed = this.onCallEndPressed.bind(this);
     this.onCallRejectPressed = this.onCallRejectPressed.bind(this);
     this.onCallReplyPressed = this.onCallReplyPressed.bind(this);
+    this.onNotesChanged = this.onNotesChanged.bind(this);
+    this.onTransferPressed = this.onTransferPressed.bind(this);
   }
 
   onCallEndPressed() {
@@ -28,6 +31,22 @@ class CallView extends Component {
 
     if (onCallRejectPressed) {
       onCallRejectPressed();
+    }
+  }
+
+  onTransferPressed() {
+    const { onTransferPressed } = this.props;
+
+    if (onTransferPressed) {
+      onTransferPressed();
+    }
+  }
+
+  onNotesChanged(value) {
+    const { onNotesChanged } = this.props;
+
+    if (onNotesChanged) {
+      onNotesChanged(value);
     }
   }
 
@@ -60,12 +79,18 @@ class CallView extends Component {
       action = <Action
         state={state}
         onCallEndPressed={this.onCallEndPressed}
+        onTransferPressed={this.onTransferPressed}
       />;
     }
 
     return (
       <div className='call-view' style={style}>
-        <Contact contact={contact} />
+        <EditableText
+          multiline={true}
+          minLines={3} maxLines={6}
+          placeholde="Заметки"
+          onChange={this.onNotesChanged}/>
+        <Contact contact={contact} ref={contact => { this.contact = contact } }/>
         {statusOrTimer}
         {action}
       </div >

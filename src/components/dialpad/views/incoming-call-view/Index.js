@@ -32,7 +32,7 @@ class IncomingCallView extends Component {
 
     return (
       <div className='incoming-call-view' style={style}>
-        <Contact contact={contact} />
+        <Contact contact={contact} ref={ contact => { this.contact = contact }}/>
         <Status state={state} />
         <Action
           state={state}
