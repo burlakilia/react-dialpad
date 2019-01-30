@@ -36,7 +36,6 @@ class ReactDialpad extends Component {
     const { onStateChanged } = this.props;
 
     if (prevProps.state !== this.props.state || prevState.state !== this.props.state) {
-      console.log('!!!', this.props.state);
       this.setState({ state: this.props.state });
       if (onStateChanged) {
         onStateChanged(this.state.state);
