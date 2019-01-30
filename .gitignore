@@ -20,3 +20,5 @@ coverage
 
 # test snapshots
 test/**/__snapshots__
+
+.idea

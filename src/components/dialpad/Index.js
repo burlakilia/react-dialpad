@@ -12,7 +12,7 @@ class ReactDialpad extends Component {
   constructor(props) {
     super();
     this.state = {
-      state: STATES.DEFAULT,
+      state: props.state || STATES.DEFAULT,
       timer: null,
       startTime: null,
       contact: props.contact || {},
@@ -35,7 +35,9 @@ class ReactDialpad extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { onStateChanged } = this.props;
 
-    if (prevState.state !== this.state.state) {
+    if (prevProps.state !== this.props.state || prevState.state !== this.props.state) {
+      console.log('!!!', this.props.state);
+      this.setState({ state: this.props.state });
       if (onStateChanged) {
         onStateChanged(this.state.state);
       }
@@ -163,7 +165,9 @@ class ReactDialpad extends Component {
     const { style } = this.props;
     let view;
 
-    if (this.state.state === STATES.DEFAULT) {
+    if (this.state.state === STATES.HIDDEN) {
+      return (<div hidden={true}></div>);
+    } else if (this.state.state === STATES.DEFAULT) {
       view = <InitialView
         onCallPressed={this.onCallPressed}
       />;
